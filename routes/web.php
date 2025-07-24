@@ -5,7 +5,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect('/books');
-});
+})->name('home');
 
 Route::get('books', function () {
     return Inertia::render('Books');
