@@ -19,6 +19,17 @@ class BookController extends Controller
     {
         $query = Book::with('authors');
 
+        if ($title = $request->input('title')) {
+            $query->where('title', 'like', "%$title%");
+        }
+
+        if ($author = $request->input('author')) {
+            $query->whereHas('authors', function ($q) use ($author) {
+                $q->where('first_name', 'like', "%$author%")
+                    ->orWhere('last_name', 'like', "%$author%");
+            });
+        }
+
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%$search%")

@@ -8,7 +8,8 @@ const breadcrumbs = [{ title: 'Books', href: '/books' }];
 
 const books = ref([]);
 const authors = ref([]);
-const search = ref('');
+const searchTitle = ref('');
+const searchAuthor = ref('');
 const currentPage = ref(1);
 const lastPage = ref(1);
 const showModal = ref(false);
@@ -25,10 +26,13 @@ const form = reactive({
 
 const fetchBooks = async () => {
     const res = await axios.get('/api/books', {
-        params: { search: search.value, page: currentPage.value },
+        params: {
+            title: searchTitle.value,
+            author: searchAuthor.value,
+            page: currentPage.value,
+        },
     });
     books.value = res.data.data;
-    //console.log(books.value);
     lastPage.value = res.data.meta.last_page;
 };
 
@@ -98,19 +102,26 @@ onMounted(() => {
     fetchAuthors();
 });
 
-watch([search, currentPage], fetchBooks);
+watch([searchTitle, searchAuthor, currentPage], fetchBooks);
 </script>
 
 <template>
     <Head title="Books" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4 flex flex-col gap-4">
-            <div class="flex justify-between items-center">
+            <!-- Filters -->
+            <div class="flex flex-col md:flex-row gap-2 justify-between items-start md:items-center">
                 <input
-                    v-model="search"
+                    v-model="searchTitle"
                     type="text"
-                    placeholder="Search books..."
-                    class="border px-2 py-1 rounded"
+                    placeholder="Search by book title..."
+                    class="border px-2 py-1 rounded w-full md:w-1/2"
+                />
+                <input
+                    v-model="searchAuthor"
+                    type="text"
+                    placeholder="Search by author name..."
+                    class="border px-2 py-1 rounded w-full md:w-1/3"
                 />
                 <button
                     @click="openCreateModal"
@@ -120,6 +131,7 @@ watch([search, currentPage], fetchBooks);
                 </button>
             </div>
 
+            <!-- Book Table -->
             <table class="w-full text-left border rounded">
                 <thead>
                 <tr class="bg-gray-100">
@@ -134,12 +146,9 @@ watch([search, currentPage], fetchBooks);
                     <td class="p-2">{{ book.title }}</td>
                     <td class="p-2">
                         <div class="flex flex-col">
-                <span
-                    v-for="author in book.authors"
-                    :key="author.id"
-                >
-                  {{ author.last_name }} {{ author.first_name }}
-                </span>
+                            <span v-for="author in book.authors" :key="author.id">
+                                {{ author.last_name }} {{ author.first_name }}
+                            </span>
                         </div>
                     </td>
                     <td class="p-2">{{ book.publication_date }}</td>
@@ -151,6 +160,7 @@ watch([search, currentPage], fetchBooks);
                 </tbody>
             </table>
 
+            <!-- Pagination -->
             <div class="flex items-center gap-4 mt-2">
                 <button
                     :disabled="currentPage <= 1"
