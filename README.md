@@ -1,3 +1,5 @@
+Stack: Laravel & Vue3 & TS & MySQL
+
 1. Clone repository
 2. Deploy it on your webserver placing public/ as root directory
 3. Generate app key php artisan key:generate
@@ -5,7 +7,8 @@
 5. Create symlink for storage access (php artisan storage:link)
 6. Migrate all migrations (php artisan migrate)
 7. (Optional) You can also use factories and seeders to seed randomizer data to db
-8. Now you can access your website! The default Laravel Auth system was chosen, so firstly you must register and log in.
+8. npm install && npm run
+9. Now you can access your website! The default Laravel Auth system was chosen, so firstly you must register and log in.
 
 Demo screenshots:
 <img width="1354" height="685" alt="image" src="https://github.com/user-attachments/assets/f6cc8d42-d8aa-4c24-b3ef-698da4318eca" />
